@@ -2,5 +2,4 @@
 *.js @alialaa
 *.ts @alialaa
 *.tsx @alialaa
-*.tsxx @alialaa
 /e2e/ @alialaa17
