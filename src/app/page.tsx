@@ -8,7 +8,7 @@ export default async function Home() {
   return (
     <main className="main">
       <div>
-        <h2>Hello Worlds</h2>
+        <h2>Hello Worldss</h2>
         <p>{process.env.FLAGSMITH_KEY || 'no key'}</p>
       </div>
       <Link href="/about">About</Link>
