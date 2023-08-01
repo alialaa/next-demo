@@ -1,5 +1,11 @@
 # next-1
 
+## 1.0.0
+
+### Major Changes
+
+- a9023d5: maaaor
+
 ## 0.4.0
 
 ### Minor Changes
