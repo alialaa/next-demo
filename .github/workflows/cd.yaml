@@ -37,7 +37,22 @@ jobs:
           publish: npx changeset tag
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
-      - name: Publish
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+      - uses: actions/setup-python@v4
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - name: Install EB CLI
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run:  pip install awsebcli
+      - name: Deploy
         if: steps.changesets.outputs.hasChangesets == 'false'
         # You can do something when a publish should happen.
-        run: echo 'publish'
+        run: eb deploy development
