@@ -9,7 +9,6 @@ export default async function Home() {
     <main className="main">
       <div>
         <h2>Hello World</h2>
-        <p>{process.env.FLAGSMITH_KEY || "no key"}</p>
       </div>
       <Link href="/about">About</Link>
       {/* {flags.isFeatureEnabled("search") && <input />} */}
