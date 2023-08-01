@@ -1,5 +1,11 @@
 # next-1
 
+## 1.1.0
+
+### Minor Changes
+
+- 9a66703: def
+
 ## 1.0.0
 
 ### Major Changes
