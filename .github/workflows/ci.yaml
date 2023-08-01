@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Steup Node Environment
         uses: actions/setup-node@v3
         with:
@@ -21,7 +23,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Ensure Changesets Exist
-        run: npx changeset status --since=main
+        run: npx changeset status --since=origin/main
       - name: Check for Formatting Errors
         run: npm run format
       - name: Check for ESLint Errors
