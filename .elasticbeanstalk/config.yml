@@ -1,0 +1,16 @@
+branch-defaults:
+  main:
+    environment: development
+    group_suffix: null
+global:
+  application_name: nextjs-starter
+  branch: null
+  default_platform: Node.js 18 running on 64bit Amazon Linux 2
+  default_region: eu-west-2
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-admin
+  repository: null
+  sc: git
+  workspace_type: Application
