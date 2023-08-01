@@ -1,5 +1,15 @@
 # next-1
 
+## 0.4.0
+
+### Minor Changes
+
+- 082b88e: minor
+
+### Patch Changes
+
+- 6dac731: nothing
+
 ## 0.3.0
 
 ### Minor Changes
