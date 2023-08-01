@@ -48,7 +48,6 @@ jobs:
         if: steps.changesets.outputs.hasChangesets == 'false'
         with:
           python-version: "3.9"
-          cache: "pip"
       - name: Install EB CLI
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: pip install awsebcli
