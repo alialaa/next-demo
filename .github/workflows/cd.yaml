@@ -47,11 +47,11 @@ jobs:
       - uses: actions/setup-python@v4
         if: steps.changesets.outputs.hasChangesets == 'false'
         with:
-          python-version: '3.9'
-          cache: 'pip'
+          python-version: "3.9"
+          cache: "pip"
       - name: Install EB CLI
         if: steps.changesets.outputs.hasChangesets == 'false'
-        run:  pip install awsebcli
+        run: pip install awsebcli
       - name: Deploy
         if: steps.changesets.outputs.hasChangesets == 'false'
         # You can do something when a publish should happen.
