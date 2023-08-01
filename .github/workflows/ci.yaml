@@ -20,6 +20,8 @@ jobs:
           cache: "npm"
       - name: Install Dependencies
         run: npm ci
+      - name: Ensure Changesets Exist
+        run: npx changeset status --since=main
       - name: Check for Formatting Errors
         run: npm run format
       - name: Check for ESLint Errors
