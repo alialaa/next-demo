@@ -38,4 +38,6 @@ jobs:
         run: pip install awsebcli
       - name: Deploy
         # You can do something when a publish should happen.
-        run: eb deploy development
+        run: |
+          eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
+          eb deploy development
