@@ -21,7 +21,7 @@ jobs:
   check-env:
     runs-on: ubuntu-latest
     outputs:
-      get-env-name: ${{ steps.get-env-name.outcome.aws_env}}
+      get-env-name: ${{ steps.get-env-name.outputs.aws_env}}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
