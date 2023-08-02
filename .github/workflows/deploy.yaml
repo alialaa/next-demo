@@ -23,6 +23,12 @@ jobs:
     outputs:
       get-env-name: ${{ steps.get-env-name.outcome.aws_env}}
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
       - id: get-env-name
         run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT 
       - run: echo ${{steps.get-env-name.outputs.aws_env}}
