@@ -38,7 +38,7 @@ jobs:
     if:  needs.check-env.outputs.get-env-name
     environment:
       name: ${{ inputs.github-env }}
-      url: ${{ steps.get-cname.outputs.aws_env_cname }}
+      url: "http://${{ steps.get-cname.outputs.aws_env_cname }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
