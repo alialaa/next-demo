@@ -35,7 +35,7 @@ jobs:
   deploy:
     needs: check-env
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && needs.check-env.outputs.get-env-name
+    if:  needs.check-env.outputs.get-env-name
     environment:
       name: ${{ inputs.github-env }}
       url: ${{ steps.get-cname.outputs.aws_env_cname }}
