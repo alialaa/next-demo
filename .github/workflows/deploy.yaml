@@ -72,4 +72,5 @@ jobs:
           eb deploy ${{ inputs.aws-env }}
       - name: Get deployment URL
         id: get-cname
-        run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT  
+        run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT 
+      - run: echo ${{ steps.get-cname.outputs.aws_env_cname }} 
