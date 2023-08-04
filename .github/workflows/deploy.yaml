@@ -86,9 +86,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
-      - uses: actions/setup-python@v4
+      - uses: actions/cache@v3
         with:
-          python-version: "3.9"
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
       - name: Install EB CLI
         run: pip install awsebcli
       - name: Deploy
