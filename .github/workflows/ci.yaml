@@ -1,4 +1,4 @@
-name: CI
+name: Tests
 on:
   pull_request:
     branches: [main]
@@ -8,70 +8,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-and-build:
+  run-tests:
+    uses: ./.github/workflows/test.yaml
+  notify-on-failure:
+    needs: run-tests
     runs-on: ubuntu-latest
+    if: failure()
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Steup Node Environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-      - name: Install Dependencies
-        run: npm ci
-      - name: Ensure Changesets Exist
-        if: github.event.pull_request.head.ref != 'changeset-release/main'
-        run: npx changeset status --since=origin/main
-      - name: Check for Formatting Errors
-        run: npm run format
-      - name: Check for ESLint Errors
-        run: npm run lint
-      - name: Check for Type Errors
-        run: npm run typecheck
-      - name: Build Project
-        run: npm run build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: .next/
-      - name: Run Unit Tests
-        run: npm run test
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: coverage
-          path: coverage/
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Store Playwright's Version
-        run: |
-          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
-          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-      - name: Cache Playwright Browsers for Playwright's Version
-        id: cache-playwright-browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-      - name: Install Playwright Browsers
-        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
-      - name: Run E2E Tests
-        run: npm run test:e2e
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
       - name: Send GitHub Action trigger data to Slack workflow
         uses: slackapi/slack-github-action@v1
-        if: failure()
         with:
           payload: |
             {
