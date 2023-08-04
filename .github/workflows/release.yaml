@@ -1,0 +1,11 @@
+name: Deploy Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      aws-env: 'development'
+      github-env: 'production'

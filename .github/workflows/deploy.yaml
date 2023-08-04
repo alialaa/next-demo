@@ -1,6 +1,6 @@
 name: Deploy
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
@@ -11,7 +11,7 @@ on:
         description: "Github Environment"
         required: true
         default: "staging"
-        type: environment
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.aws-env }}-${{ inputs.github-env }}
