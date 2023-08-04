@@ -4,8 +4,11 @@ on:
     types: [published]
 
 jobs:
+  run-tests:
+    uses: ./.github/workflows/test.yaml
   deploy:
+    needs: run-tests
     uses: ./.github/workflows/deploy.yaml
     with:
-      aws-env: 'development'
-      github-env: 'production'
+      aws-env: "development"
+      github-env: "production"
