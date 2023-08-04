@@ -57,7 +57,7 @@ jobs:
           eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
       - name: Abort if Cancelled
         if: cancelled()
-        run: eb terminate ${{ inputs.aws-env }}
+        run: eb terminate ${{ inputs.aws-env }} --force
   deploy:
     needs: [check-env,  create-env]
     if: always() && !cancelled() && (needs.check-env.outputs.get-env-name || needs.create-env.result == 'success')
