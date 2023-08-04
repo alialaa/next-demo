@@ -8,6 +8,7 @@ jobs:
     uses: ./.github/workflows/test.yaml
   deploy:
     needs: run-tests
+    secrets: inherit
     uses: ./.github/workflows/deploy.yaml
     with:
       aws-env: "development"
