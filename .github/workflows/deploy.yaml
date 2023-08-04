@@ -34,6 +34,7 @@ jobs:
       - run: echo ${{steps.get-env-name.outputs.aws_env}}
   create-env:
     runs-on: ubuntu-latest
+    needs: check-env
     if: !needs.check-env.outputs.get-env-name
     environment:
       name: ${{ inputs.github-env }}
@@ -49,7 +50,7 @@ jobs:
           eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
           eb create --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
   deploy:
-    needs: check-env
+    needs: [check-env,  create-env]
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
