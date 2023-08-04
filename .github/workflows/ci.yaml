@@ -11,6 +11,7 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
     steps:
+      - run: echo '${{ toJson(github.event.pull_request) }}'
       - name: Checkout
         uses: actions/checkout@v3
         with:
