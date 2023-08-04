@@ -1,5 +1,15 @@
 # next-1
 
+## 1.2.0
+
+### Minor Changes
+
+- 21d2344: hello
+
+### Patch Changes
+
+- fd12559: lol
+
 ## 1.1.0
 
 ### Minor Changes
