@@ -1,7 +1,7 @@
 name: Deploy
 on:
   workflow_dispatch:
-    inputs: 
+    inputs:
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
@@ -16,7 +16,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.aws-env }}-${{ inputs.github-env }}
   cancel-in-progress: true
-  
+
 jobs:
   check-env:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - id: get-env-name
-        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT 
+        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
       - run: echo ${{steps.get-env-name.outputs.aws_env}}
   create-env:
     runs-on: ubuntu-latest
@@ -55,9 +55,9 @@ jobs:
       - name: Create a New Environment
         run: |
           eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
-          eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
+          eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }}
   deploy:
-    needs: [check-env,  create-env]
+    needs: [check-env, create-env]
     if: always() && !cancelled() && (needs.check-env.outputs.get-env-name || needs.create-env.result == 'success')
     runs-on: ubuntu-latest
     environment:
@@ -98,8 +98,8 @@ jobs:
           eb deploy ${{ inputs.aws-env }}
       - name: Get deployment URL
         id: get-cname
-        run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT 
-      - run: echo ${{ steps.get-cname.outputs.aws_env_cname }} 
+        run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT
+      - run: echo ${{ steps.get-cname.outputs.aws_env_cname }}
       - name: Abort if Cancelled
         if: cancelled() && steps.install-eb-cli.conclusion == 'success'
         run: eb abort ${{ inputs.aws-env }}
