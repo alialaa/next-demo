@@ -14,7 +14,7 @@ on:
         type: environment
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.aws-env }}-${{ inputs.github-env }}
   cancel-in-progress: true
   
 jobs:
@@ -45,6 +45,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Install EB CLI
+        run: pip install awsebcli
       - name: Create a New Environment
         run: |
           eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
