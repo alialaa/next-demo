@@ -54,7 +54,10 @@ jobs:
       - name: Create a New Environment
         run: |
           eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
-          eb create --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
+          eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
+      - name: Abort if Cancelled
+        if: cancelled()
+        run: eb terminate ${{ inputs.aws-env }}
   deploy:
     needs: [check-env,  create-env]
     if: always() && !cancelled() && (needs.check-env.outputs.get-env-name || needs.create-env.result == 'success')
@@ -97,3 +100,6 @@ jobs:
         id: get-cname
         run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT 
       - run: echo ${{ steps.get-cname.outputs.aws_env_cname }} 
+      - name: Abort if Cancelled
+        if: cancelled()
+        run: eb abort ${{ inputs.aws-env }}
