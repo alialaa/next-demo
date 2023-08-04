@@ -99,7 +99,24 @@ jobs:
       - name: Get deployment URL
         id: get-cname
         run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT
-      - run: echo ${{ steps.get-cname.outputs.aws_env_cname }}
+      - name: Send GitHub Action trigger data to Slack workflow
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Deployment to AWS environment *${{inputs.aws-env}}* using *${{ inputs.github-env }}* GitHub wnvironment  was successfull. <http://${{ steps.get-cname.outputs.aws_env_cname }}|View Deployment>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       - name: Abort if Cancelled
         if: cancelled() && steps.install-eb-cli.conclusion == 'success'
         run: eb abort ${{ inputs.aws-env }}
