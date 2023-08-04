@@ -51,7 +51,7 @@ jobs:
           eb create --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }} 
   deploy:
     needs: [check-env,  create-env]
-    if: needs.check-env.outputs.get-env-name || needs.create-env.result == 'success'
+    if: always() && !cancelled() && (needs.check-env.outputs.get-env-name || needs.create-env.result == 'success')
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
