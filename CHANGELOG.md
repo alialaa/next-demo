@@ -1,5 +1,11 @@
 # next-1
 
+## 1.2.1
+
+### Patch Changes
+
+- c8185ec: edwed
+
 ## 1.2.0
 
 ### Minor Changes
