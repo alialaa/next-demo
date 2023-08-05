@@ -44,7 +44,7 @@ jobs:
           echo ${{ steps.changesets.outputs.published }}
           echo ${{ fromJson(steps.changesets.outputs.published) }}
       - name: Send GitHub Action trigger data to Slack workflow
-        if: fromJson(steps.changesets.outputs.pullRequestNumber)
+        if: steps.changesets.outputs.pullRequestNumber
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
