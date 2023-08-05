@@ -1,5 +1,11 @@
 # next-1
 
+## 1.8.1
+
+### Patch Changes
+
+- d541aff: defe
+
 ## 1.8.0
 
 ### Minor Changes
