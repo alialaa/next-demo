@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
       - run: |
           echo '${{ toJson(steps.changesets.outputs) }}'
-          echo steps.changesets.outputs.published
+          echo ${{ steps.changesets.outputs.published }}
       - name: Set Release Version
         if: steps.changesets.outputs.published
         id: get-version
