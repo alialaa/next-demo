@@ -1,5 +1,11 @@
 # next-1
 
+## 1.4.0
+
+### Minor Changes
+
+- 5a3d019: dee
+
 ## 1.3.0
 
 ### Minor Changes
