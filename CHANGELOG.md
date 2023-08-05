@@ -1,5 +1,16 @@
 # next-1
 
+## 1.8.0
+
+### Minor Changes
+
+- 9c9a82d: deploy
+
+### Patch Changes
+
+- 7712e1e: edef
+- 08e800e: dewdew
+
 ## 1.7.3
 
 ### Patch Changes
