@@ -1,5 +1,11 @@
 # next-1
 
+## 1.7.2
+
+### Patch Changes
+
+- f3b7476: ded
+
 ## 1.7.1
 
 ### Patch Changes
