@@ -90,7 +90,14 @@ jobs:
     if: needs.release.outputs.should-deploy
     secrets: inherit
     uses: ./.github/workflows/test.yaml
-  deploy:
+  deploy-to-staging:
+    needs: run-tests
+    secrets: inherit
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      aws-env: "my-app-staging"
+      github-env: "staging"
+  deploy-to-production:
     needs: run-tests
     secrets: inherit
     uses: ./.github/workflows/deploy.yaml
