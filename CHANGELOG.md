@@ -1,5 +1,11 @@
 # next-1
 
+## 1.8.2
+
+### Patch Changes
+
+- 4b3cbd3: fixed styling
+
 ## 1.8.1
 
 ### Patch Changes
