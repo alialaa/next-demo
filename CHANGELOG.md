@@ -1,5 +1,11 @@
 # next-1
 
+## 1.7.0
+
+### Minor Changes
+
+- 5700a88: my bad
+
 ## 1.6.0
 
 ### Minor Changes
