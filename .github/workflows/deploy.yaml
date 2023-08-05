@@ -76,7 +76,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Deployment to AWS environment *${{inputs.aws-env}}* using *${{ inputs.github-env }}* GitHub wnvironment  was successfull. <http://${{ steps.get-cname.outputs.aws_env_cname }}|View Deployment>"
+                    "text": "🚀 Deployment to AWS environment *${{inputs.aws-env}}* using *${{ inputs.github-env }}* GitHub wnvironment  was successfull. <http://${{ steps.get-cname.outputs.aws_env_cname }}|View Deployment>"
                   }
                 }
               ]

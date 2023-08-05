@@ -74,7 +74,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }}|${{ github.workflow }} workflow run>* failed for pull request *<${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}>*"
+                    "text": "🛑 *<https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }}|${{ github.workflow }} workflow run>* failed for pull request *<${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}>*"
                   }
                 }
               ]

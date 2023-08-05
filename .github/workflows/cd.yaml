@@ -11,7 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      should-deploy: ${{ steps.changesets.outputs.hasChangesets }}
+      should-deploy: ${{ steps.changesets.outputs.published }}
     # permissions:
     #   id-token: write
     #   contents: write
@@ -39,11 +39,30 @@ jobs:
           publish: npx changeset tag
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
-      
-      - run: echo '${{ toJson(steps.changesets.outputs) }}'
-      - run: echo '${{ toJson(fromJson(steps.changesets.outputs.publishedPackages)) }}'
-      - run: echo '${{ toJson(fromJson(steps.changesets.outputs.publishedPackages)[0]) }}'
-      - run: echo '${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}'
+      - name: Set Release Version
+        if: steps.changesets.outputs.published
+        id: get-version
+        run: echo "version=${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}" >> $GITHUB_OUTPUT
+      - name: Send GitHub Action trigger data to Slack workflow
+        if: steps.changesets.outputs.published
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🚀 *<https://github.com/${{github.repository}}/releases/tags/v${{ steps.get-version.outputs.version }}|Version ${{ steps.get-version.outputs.version }}>* Released! Deployment should be in progress. ⏳"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+  
     
   #   run-tests:
   #   uses: ./.github/workflows/test.yaml
