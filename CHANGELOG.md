@@ -1,5 +1,11 @@
 # next-1
 
+## 1.3.0
+
+### Minor Changes
+
+- 7dd6d62: xewdew
+
 ## 1.2.1
 
 ### Patch Changes
