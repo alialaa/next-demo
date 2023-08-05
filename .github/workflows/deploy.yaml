@@ -18,47 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-env:
-    runs-on: ubuntu-latest
-    outputs:
-      get-env-name: ${{ steps.get-env-name.outputs.aws_env}}
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-      - id: get-env-name
-        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
-      - run: echo ${{steps.get-env-name.outputs.aws_env}}
-  create-env:
-    runs-on: ubuntu-latest
-    needs: check-env
-    if: needs.check-env.outputs.get-env-name == ''
-    environment:
-      name: ${{ inputs.github-env }}
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip
-      - name: Install EB CLI
-        id: install-eb-cli
-        run: pip install awsebcli
-      - name: Create a New Environment
-        run: |
-          eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
-          eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }}
   deploy:
-    needs: [check-env, create-env]
-    if: always() && !cancelled() && (needs.check-env.outputs.get-env-name || needs.create-env.result == 'success')
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
@@ -91,6 +51,13 @@ jobs:
       - name: Install EB CLI
         id: install-eb-cli
         run: pip install awsebcli
+      - id: get-env-name
+        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
+      - name: Create a New Environment
+        if: steps.get-env-name.outputs.aws_env == ''
+        run: |
+          eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
+          eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }}
       - name: Deploy
         # You can do something when a publish should happen.
         run: |

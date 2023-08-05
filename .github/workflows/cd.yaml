@@ -10,6 +10,8 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.changesets.outputs.hasChangesets }}
     # permissions:
     #   id-token: write
     #   contents: write
@@ -37,3 +39,15 @@ jobs:
           publish: npx changeset tag
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
+      
+      - run: echo '${{ toJson(steps.changesets.outputs) }}'
+    
+  #   run-tests:
+  #   uses: ./.github/workflows/test.yaml
+  # deploy:
+  #   needs: run-tests
+  #   secrets: inherit
+  #   uses: ./.github/workflows/deploy.yaml
+  #   with:
+  #     aws-env: "development"
+  #     github-env: "production"
