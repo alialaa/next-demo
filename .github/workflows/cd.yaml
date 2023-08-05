@@ -11,7 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      should-deploy: ${{ steps.changesets.outputs.hasChangesets }}
+      should-deploy: ${{ steps.changesets.outputs.hasChangesets == 'false' }}
     # permissions:
     #   id-token: write
     #   contents: write
@@ -87,7 +87,7 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
   run-tests:
     needs: release
-    if: fromJson(needs.release.outputs.should-deploy)
+    if: needs.release.outputs.should-deploy
     secrets: inherit
     uses: ./.github/workflows/test.yaml
   deploy:
