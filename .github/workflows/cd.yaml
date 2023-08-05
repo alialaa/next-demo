@@ -43,6 +43,25 @@ jobs:
           echo '${{ toJson(steps.changesets.outputs) }}'
           echo ${{ steps.changesets.outputs.published }}
           echo ${{ fromJson(steps.changesets.outputs.published) }}
+      - name: Send GitHub Action trigger data to Slack workflow
+        if: fromJson(steps.changesets.outputs.pullRequestNumber)
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✅ *<https://github.com/${{github.repository}}/pulls/${{ steps.changesets.outputs.pullRequestNumber }}|Version Pull Request>* was updated. Review it or merge it to create a new release and deployment."
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       - name: Set Release Version
         if: fromJson(steps.changesets.outputs.published)
         id: get-version
