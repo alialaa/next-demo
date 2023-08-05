@@ -42,12 +42,13 @@ jobs:
       - run: |
           echo '${{ toJson(steps.changesets.outputs) }}'
           echo ${{ steps.changesets.outputs.published }}
+          echo ${{ fromJson(steps.changesets.outputs.published) }}
       - name: Set Release Version
-        if: steps.changesets.outputs.published == true
+        if: fromJson(steps.changesets.outputs.published)
         id: get-version
         run: echo "version=${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }}" >> $GITHUB_OUTPUT
       - name: Send GitHub Action trigger data to Slack workflow
-        if: steps.changesets.outputs.published == true
+        if: fromJson(steps.changesets.outputs.published)
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
