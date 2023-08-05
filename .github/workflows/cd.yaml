@@ -77,7 +77,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "⏳ *<https://github.com/${{github.repository}}/releases/tags/v${{ steps.get-version.outputs.version }}|Version ${{ steps.get-version.outputs.version }}>* Released! Deployment should be in progress."
+                    "text": "⏳ *<https://github.com/${{github.repository}}/releases/tag/v${{ steps.get-version.outputs.version }}|Version ${{ steps.get-version.outputs.version }}>* Released! Deployment should be in progress."
                   }
                 }
               ]
@@ -96,6 +96,3 @@ jobs:
     with:
       aws-env: "production"
       github-env: "production"
-    
-    
- 
