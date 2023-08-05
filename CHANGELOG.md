@@ -1,5 +1,11 @@
 # next-1
 
+## 1.5.0
+
+### Minor Changes
+
+- fa0c202: def
+
 ## 1.4.0
 
 ### Minor Changes
