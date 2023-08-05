@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
       
       - run: echo '${{ toJson(steps.changesets.outputs) }}'
-      - run: echo '${{ toJson(steps.changesets.outputs.publishedPackages.*.version[0]) }}'
+      - run: echo '${{ steps.changesets.outputs.publishedPackages.*.version }}'
     
   #   run-tests:
   #   uses: ./.github/workflows/test.yaml
