@@ -95,5 +95,5 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/deploy.yaml
     with:
-      aws-env: "production"
+      aws-env: "my-app-prod"
       github-env: "production"
