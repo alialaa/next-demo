@@ -11,7 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      should-deploy: ${{ steps.changesets.outputs.published }}
+      should-deploy: ${{ fromJson(steps.changesets.outputs.published) }}
     # permissions:
     #   id-token: write
     #   contents: write
@@ -54,7 +54,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "✅ *<https://github.com/${{github.repository}}/pulls/${{ steps.changesets.outputs.pullRequestNumber }}|Version Pull Request>* was updated. Review it or merge it to create a new release and deployment."
+                    "text": "✅ *<https://github.com/${{github.repository}}/pull/${{ steps.changesets.outputs.pullRequestNumber }}|Version Pull Request>* was updated. Review it and merge it to create a new release and deployment."
                   }
                 }
               ]
@@ -77,7 +77,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🚀 *<https://github.com/${{github.repository}}/releases/tags/v${{ steps.get-version.outputs.version }}|Version ${{ steps.get-version.outputs.version }}>* Released! Deployment should be in progress. ⏳"
+                    "text": "⏳ *<https://github.com/${{github.repository}}/releases/tags/v${{ steps.get-version.outputs.version }}|Version ${{ steps.get-version.outputs.version }}>* Released! Deployment should be in progress."
                   }
                 }
               ]
@@ -85,14 +85,17 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-  
+  run-tests:
+    needs: release
+    if: needs.release.outputs.should-deploy
+    uses: ./.github/workflows/test.yaml
+  deploy:
+    needs: run-tests
+    secrets: inherit
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      aws-env: "production"
+      github-env: "production"
     
-  #   run-tests:
-  #   uses: ./.github/workflows/test.yaml
-  # deploy:
-  #   needs: run-tests
-  #   secrets: inherit
-  #   uses: ./.github/workflows/deploy.yaml
-  #   with:
-  #     aws-env: "development"
-  #     github-env: "production"
+    
+ 
