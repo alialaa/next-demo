@@ -9,3 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo '${{ toJson(github.event) }}'
+      - name: Get Pull Request and Check Status
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = github.rest.issues.pulls({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: github.event.issue.number
+            });
+            console.log(response.data)
