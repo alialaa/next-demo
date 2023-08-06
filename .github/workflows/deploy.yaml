@@ -16,6 +16,10 @@ on:
         default: "staging"
         type: string
   workflow_call:
+    outputs:
+      aws_env_url:
+        description: "Deployment URL"
+        value: ${{ jobs.deploy.outputs.aws_env_url }}
     inputs:
       ref:
         description: "The REF to deploy"
@@ -38,9 +42,11 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      aws_env_url: ${{ steps.get-cname.outputs.aws_env_url}}
     environment:
       name: ${{ inputs.github-env }}
-      url: "http://${{ steps.get-cname.outputs.aws_env_cname }}"
+      url: "http://${{ steps.get-cname.outputs.aws_env_url }}"
     steps:
       - name: Avoid deploying to production using a non production env
         if: inputs.aws-env == 'my-app-prod' && inputs.github-env != 'production'
@@ -89,7 +95,7 @@ jobs:
           eb deploy ${{ inputs.aws-env }}
       - name: Get deployment URL
         id: get-cname
-        run: echo "aws_env_cname=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT
+        run: echo "aws_env_url=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT
       - name: Send GitHub Action trigger data to Slack workflow
         uses: slackapi/slack-github-action@v1
         with:
@@ -100,7 +106,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🚀 Deployment to AWS environment *${{inputs.aws-env}}* using *${{ inputs.github-env }}* GitHub wnvironment  was successfull. <http://${{ steps.get-cname.outputs.aws_env_cname }}|View Deployment>"
+                    "text": "🚀 Deployment to AWS environment *${{inputs.aws-env}}* using *${{ inputs.github-env }}* GitHub wnvironment  was successfull. <http://${{ steps.get-cname.outputs.aws_env_url }}|View Deployment>"
                   }
                 }
               ]

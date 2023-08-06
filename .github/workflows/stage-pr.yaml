@@ -23,6 +23,22 @@ jobs:
                 pull_number: context.issue.number
             });
             return response.data.head.ref
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const comment = `⏳ Deployment should start in a moment...
+
+            [You can monitor the progress here.](https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }})
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            })
+
   deploy-pr:
     needs: get-pr-head
     secrets: inherit
