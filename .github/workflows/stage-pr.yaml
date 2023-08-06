@@ -25,28 +25,45 @@ jobs:
                 pull_number: context.issue.number
             });
             return response.data.head.ref
-      - name: Update Pull Request
+      - name: Trigger a Branch Deploy
         uses: actions/github-script@v6
-        continue-on-error: true
         with:
+          result-encoding: string
           script: |
-            const comment = `⏳ Deployment should start in a moment...
-
-            [You can monitor the progress here.](https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }})
-            `;
-
-            github.rest.issues.createComment({
+            const response = await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: comment
-            })
+              workflow_id: "deploy.yaml",
+              ref: ${{ needs.get-pr-head.outputs.pr-ref }},
+              inputs: {
+                aws-env: `my-app-pr-${context.issue.number}`
+                github-env: "staging"
+              }
+            });
+            console.log(response)
 
-  deploy-pr:
-    needs: get-pr-head
-    secrets: inherit
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      aws-env: "my-app-pr-${{ github.event.issue.number }}"
-      github-env: "staging"
-      ref: ${{ needs.get-pr-head.outputs.pr-ref }}
+      # - name: Update Pull Request
+      #   uses: actions/github-script@v6
+      #   continue-on-error: true
+      #   with:
+      #     script: |
+      #       const comment = `⏳ Deployment should start in a moment...
+
+      #       [You can monitor the progress here.](https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }})
+      #       `;
+
+      #       github.rest.issues.createComment({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #         body: comment
+      #       })
+
+  # deploy-pr:
+  #   needs: get-pr-head
+  #   secrets: inherit
+  #   uses: ./.github/workflows/deploy.yaml
+  #   with:
+  #     aws-env: "my-app-pr-${{ github.event.issue.number }}"
+  #     github-env: "staging"
+  #     ref: ${{ needs.get-pr-head.outputs.pr-ref }}
