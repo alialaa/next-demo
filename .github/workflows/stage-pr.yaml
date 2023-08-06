@@ -4,12 +4,15 @@ on:
     types: [created]
 
 jobs:
-  check-pr-comment:
+  get-pr-head:
     if: ${{ github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/deploy' }}
     runs-on: ubuntu-latest
+    outputs:
+      pr-ref: ${{ steps.get-head-ref.outputs.result }}
     steps:
       - run: echo '${{ toJson(github.event) }}'
-      - name: Get Pull Request and Check Status
+      - name: Get Pull Request Head Ref
+        id: get-head-ref
         uses: actions/github-script@v6
         with:
           script: |
@@ -18,4 +21,12 @@ jobs:
                 repo: context.repo.repo,
                 pull_number: context.issue.number
             });
-            console.log(response.data)
+            return response.data.head.ref
+  deploy-pr:
+    needs: get-pr-head
+    secrets: inherit
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      aws-env: "my-app-pr-${{ github.event.issue.number }}"
+      github-env: "staging"
+      ref: ${{ needs.get-pr-head.outputs.pr-ref }}
