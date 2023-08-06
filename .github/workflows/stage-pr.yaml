@@ -16,6 +16,6 @@ jobs:
             const response = github.rest.issues.pulls({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: github.event.issue.number
+                pull_number: context.issue.number
             });
             console.log(response.data)
