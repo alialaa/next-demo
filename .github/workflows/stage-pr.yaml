@@ -15,6 +15,7 @@ jobs:
         id: get-head-ref
         uses: actions/github-script@v6
         with:
+          result-encoding: string
           script: |
             const response = await github.rest.pulls.get({
                 owner: context.repo.owner,
