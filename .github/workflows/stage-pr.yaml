@@ -5,7 +5,7 @@ on:
 
 jobs:
   check-pr-comment:
-    if: ${{ github.event.issue.pull_request && github.event.issue.state == 'opened' && github.event.comment.body == '/deploy' }}
+    if: ${{ github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/deploy' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '${{ toJson(github.event) }}'
