@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    outputs:
-      pr-ref: ${{ steps.get-head-ref.outputs.result }}
+    # outputs:
+    #   pr-ref: ${{ steps.get-head-ref.outputs.result }}
     steps:
       - run: echo '${{ toJson(github.event) }}'
       - name: Get Pull Request Head Ref
@@ -34,7 +34,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: "deploy.yaml",
-              ref: ${{ needs.get-pr-head.outputs.pr-ref }},
+              ref: ${{ steps.get-head-ref.outputs.result }},
               inputs: {
                 aws-env: `my-app-pr-${context.issue.number}`,
                 github-env: "staging"
