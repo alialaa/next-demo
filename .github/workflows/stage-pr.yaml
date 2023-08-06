@@ -36,8 +36,8 @@ jobs:
               workflow_id: "deploy.yaml",
               ref: "${{ steps.get-head-ref.outputs.result }}",
               inputs: {
-                aws-env: `my-app-pr-${context.issue.number}`,
-                github-env: "staging"
+                "aws-env": `my-app-pr-${context.issue.number}`,
+                "github-env": "staging"
               }
             });
             console.log(response)
