@@ -8,6 +8,8 @@ on:
 jobs:
   destroy-pr-env:
     runs-on: ubuntu-latest
+    permissions:
+      deployments: write
     if: ${{ (github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/destroy') || github.event_name == 'pull_request_target' }}
     steps:
       - run: echo '${{ toJson(github.event) }}'
