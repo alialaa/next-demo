@@ -7,6 +7,8 @@ jobs:
   get-pr-head:
     if: ${{ github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/deploy' }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     outputs:
       pr-ref: ${{ steps.get-head-ref.outputs.result }}
     steps:
@@ -25,6 +27,7 @@ jobs:
             return response.data.head.ref
       - name: Update Pull Request
         uses: actions/github-script@v6
+        continue-on-error: true
         with:
           script: |
             const comment = `⏳ Deployment should start in a moment...
