@@ -42,6 +42,7 @@ jobs:
             return response.data.length > 0 ? response.data[0].id : ""
       - run: echo ${{ steps.get-latest-deployment.outputs.result }}
       - name: Add Inactive Status
+        if: steps.get-latest-deployment.outputs.result != ''
         uses: actions/github-script@v6
         with:
           script: |
