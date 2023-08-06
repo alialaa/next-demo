@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      actions: write
     # outputs:
     #   pr-ref: ${{ steps.get-head-ref.outputs.result }}
     steps:
