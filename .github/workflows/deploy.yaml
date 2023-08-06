@@ -150,7 +150,7 @@ jobs:
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: ${{ inputs.report-pr }}
+              issue_number: ${{ inputs.report-pr }},
               body: comment
             })
       - name: Update Pull Request (Failure)
@@ -166,7 +166,7 @@ jobs:
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: ${{ inputs.report-pr }}
+              issue_number: ${{ inputs.report-pr }},
               body: comment
             })
       - name: Abort if Cancelled
