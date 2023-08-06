@@ -2,9 +2,9 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: "The REF to deploy"
-        type: string
+      # ref:
+      #   description: "The REF to deploy"
+      #   type: string
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
@@ -21,9 +21,9 @@ on:
         description: "Deployment URL"
         value: ${{ jobs.deploy.outputs.aws_env_url }}
     inputs:
-      ref:
-        description: "The REF to deploy"
-        type: string
+      # ref:
+      #   description: "The REF to deploy"
+      #   type: string
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
@@ -58,7 +58,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ inputs.ref }}
+          # ref: ${{ inputs.ref }}
       - name: Steup Node Environment
         uses: actions/setup-node@v3
         with:
