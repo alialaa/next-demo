@@ -145,7 +145,7 @@ jobs:
           script: |
             const comment = `### 🚀 Depolyment Completed.
 
-            You can view the depolyed environment here: http://${{ steps.get-cname.outputs.aws_env_url }}
+            You can view the depolyed environment here: http://${{ steps.get-cname.outputs.aws_env_url }}`
 
             github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -161,7 +161,7 @@ jobs:
           script: |
             const comment = `### 🛑 Depolyment Failed.
 
-            [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`
 
             github.rest.issues.createComment({
               owner: context.repo.owner,
