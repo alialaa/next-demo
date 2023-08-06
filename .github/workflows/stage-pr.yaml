@@ -5,7 +5,7 @@ on:
 
 jobs:
   check-pr-comment:
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event.issue.pull_request && github.event.issue.state == 'opened' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '${{ toJson(github.event) }}'
@@ -17,6 +17,6 @@ jobs:
             const response = github.rest.pulls.get({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.issue.number
+                pull_number: context.payload.issue.number
             });
             console.log(response.data)
