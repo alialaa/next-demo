@@ -17,6 +17,9 @@ on:
         type: string
   workflow_call:
     inputs:
+      ref:
+        description: "The REF to deploy"
+        type: string
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
