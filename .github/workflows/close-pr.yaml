@@ -25,7 +25,7 @@ jobs:
             });
             return response.data.head.ref
       - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
-      - name: Trigger a Branch Deploy
+      - name: Get deployment ID
         uses: actions/github-script@v6
         id: get-latest-deployment
         with:
@@ -39,3 +39,14 @@ jobs:
             });
             return response.data.length > 0 ? response.data[0].id : ""
       - run: echo ${{ steps.get-latest-deployment.outputs.result }}
+      - name: Add Inactive Status
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.get-latest-deployment.outputs.result }},
+              state: 'inactive',
+            });
+            console.log(response)
