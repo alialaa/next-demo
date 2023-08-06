@@ -25,18 +25,13 @@ jobs:
             });
             return response.data.head.ref
       - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
-      # - name: Trigger a Branch Deploy
-      #   uses: actions/github-script@v6
-      #   with:
-      #     script: |
-      #       const response = await github.rest.repos.listDeployments({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         workflow_id: "deploy.yaml",
-      #         ref: "${{ gith }}",
-      #         inputs: {
-      #           "aws-env": `my-app-pr-${context.issue.number}`,
-      #           "github-env": "staging"
-      #         }
-      #       });
-      #       console.log(response.data)
+      - name: Trigger a Branch Deploy
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result  }}",
+            });
+            console.log(response.data)
