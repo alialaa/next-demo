@@ -1,0 +1,42 @@
+name: Destroy PR Environment
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  destroy-pr-env:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/destroy') || github.event_name == 'pull_request_target' }}
+    steps:
+      - run: echo '${{ toJson(github.event) }}'
+      - name: Get Pull Request Head Ref
+        if: github.event_name == 'issue_comment'
+        id: get-head-ref
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const response = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number
+            });
+            return response.data.head.ref
+      - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
+      # - name: Trigger a Branch Deploy
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const response = await github.rest.repos.listDeployments({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         workflow_id: "deploy.yaml",
+      #         ref: "${{ gith }}",
+      #         inputs: {
+      #           "aws-env": `my-app-pr-${context.issue.number}`,
+      #           "github-env": "staging"
+      #         }
+      #       });
+      #       console.log(response.data)

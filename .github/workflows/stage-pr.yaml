@@ -1,10 +1,10 @@
-name: Deploy PR to a Staging Environment
+name: Trigger a Deploy for PR Branch
 on:
   issue_comment:
     types: [created]
 
 jobs:
-  get-pr-head:
+  trigger-pr-branch-deploy:
     if: ${{ github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/deploy' }}
     runs-on: ubuntu-latest
     permissions:
