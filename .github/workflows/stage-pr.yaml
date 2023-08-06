@@ -39,7 +39,7 @@ jobs:
               inputs: {
                 "aws-env": `my-app-pr-${context.issue.number}`,
                 "github-env": "staging",
-                "report-pr": context.issue.number
+                "report-pr": `${context.issue.number}`
               }
             });
             console.log(response)
