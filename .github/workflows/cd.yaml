@@ -87,7 +87,7 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
   run-tests:
     needs: release
-    if: needs.release.outputs.should-deploy
+    if: needs.release.outputs.should-deploy == 'true'
     secrets: inherit
     uses: ./.github/workflows/test.yaml
   deploy-to-staging:

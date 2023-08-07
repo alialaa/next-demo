@@ -38,10 +38,10 @@ jobs:
       - run: echo "should_terminate=${{  steps.get-env-name.outputs.aws_env != '' && steps.get-env-status.outputs.aws_env_status != 'Terminated' }}" >> $GITHUB_OUTPUT
         id: check-env
       - name: Destroy Environment
-        if: steps.check-env.outputs.should_terminate
+        if: steps.check-env.outputs.should_terminate == 'true'
         run: eb terminate ${{ steps.get-env-name.outputs.aws_env }} --force
       - name: Get Pull Request Head Ref
-        if: github.event_name == 'issue_comment' && steps.check-env.outputs.should_terminate
+        if: github.event_name == 'issue_comment' && steps.check-env.outputs.should_terminate == 'true'
         id: get-head-ref
         uses: actions/github-script@v6
         with:
@@ -55,7 +55,7 @@ jobs:
             return response.data.head.ref
       # - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
       - name: Get deployment ID
-        if: steps.check-env.outputs.should_terminate
+        if: steps.check-env.outputs.should_terminate == 'true'
         uses: actions/github-script@v6
         id: get-latest-deployment
         with:
@@ -70,7 +70,7 @@ jobs:
             return response.data.length > 0 ? response.data[0].id : ""
       # - run: echo ${{ steps.get-latest-deployment.outputs.result }}
       - name: Add Inactive Status
-        if: steps.get-latest-deployment.outputs.result != '' && steps.check-env.outputs.should_terminate
+        if: steps.get-latest-deployment.outputs.result != '' && steps.check-env.outputs.should_terminate == 'true'
         uses: actions/github-script@v6
         with:
           script: |
@@ -83,7 +83,7 @@ jobs:
             console.log(response)
       - name: Update Pull Request (Failure)
         uses: actions/github-script@v6
-        if: failure() && steps.check-env.outputs.should_terminate
+        if: failure() && steps.check-env.outputs.should_terminate == 'true'
         continue-on-error: true
         with:
           script: |
@@ -99,7 +99,7 @@ jobs:
             })
       - name: Update Pull Request (Success)
         uses: actions/github-script@v6
-        if: success() && steps.check-env.outputs.should_terminate
+        if: success() && steps.check-env.outputs.should_terminate == 'true'
         continue-on-error: true
         with:
           script: |
