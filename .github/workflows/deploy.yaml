@@ -104,9 +104,9 @@ jobs:
         id: install-eb-cli
         run: pip install awsebcli
       - id: get-env-name
-        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
+        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[0].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
       - id: get-env-status
-        run: echo "aws_env_status=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].Status" --output text)" >> $GITHUB_OUTPUT
+        run: echo "aws_env_status=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[0].Status" --output text)" >> $GITHUB_OUTPUT
       - name: Create a New Environment
         if: steps.get-env-name.outputs.aws_env == '' || steps.get-env-status.outputs.aws_env_status == 'Terminated'
         run: |
@@ -119,7 +119,7 @@ jobs:
           eb deploy ${{ inputs.aws-env }}
       - name: Get deployment URL
         id: get-cname
-        run: echo "aws_env_url=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].CNAME" --output text)" >> $GITHUB_OUTPUT
+        run: echo "aws_env_url=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[0].CNAME" --output text)" >> $GITHUB_OUTPUT
       - name: Send GitHub Action trigger data to Slack workflow
         uses: slackapi/slack-github-action@v1
         continue-on-error: true
