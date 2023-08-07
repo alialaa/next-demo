@@ -1,5 +1,11 @@
 # next-1
 
+## 1.9.0
+
+### Minor Changes
+
+- a8e4b3b: added !
+
 ## 1.8.2
 
 ### Patch Changes
