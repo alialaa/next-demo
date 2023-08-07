@@ -52,7 +52,7 @@ jobs:
       - run: echo ${{ steps.get-env-name.outputs.aws_env }}
       - name: Destroy Environment
         if: steps.get-env-name.outputs.aws_env != ''
-        run: eb terminate ${{ needs.check-env.outputs.env-name }}
+        run: eb terminate ${{ needs.check-env.outputs.env-name }} --force
       - name: Get Pull Request Head Ref
         if: github.event_name == 'issue_comment' && steps.get-env-name.outputs.aws_env != ''
         id: get-head-ref
