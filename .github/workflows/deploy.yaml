@@ -105,8 +105,10 @@ jobs:
         run: pip install awsebcli
       - id: get-env-name
         run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
+      - id: get-env-status
+        run: echo "aws_env_status=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names ${{ inputs.aws-env }} --query "Environments[*].Status" --output text)" >> $GITHUB_OUTPUT
       - name: Create a New Environment
-        if: steps.get-env-name.outputs.aws_env == ''
+        if: steps.get-env-name.outputs.aws_env == '' || steps.get-env-status.outputs.aws_env_status == 'Terminated'
         run: |
           eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
           eb create ${{ inputs.aws-env }} --envvars FLAGSMITH_KEY=${{ secrets.FLAGSMITH_KEY }} --instance-types t3.large,t3.medium --cname ${{ inputs.aws-env }}
