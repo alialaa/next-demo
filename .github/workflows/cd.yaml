@@ -93,6 +93,8 @@ jobs:
   deploy-to-staging:
     needs: run-tests
     secrets: inherit
+    permissions:
+      pull-requests: write
     uses: ./.github/workflows/deploy.yaml
     with:
       aws-env: "my-app-staging"
@@ -100,6 +102,8 @@ jobs:
   deploy-to-production:
     needs: run-tests
     secrets: inherit
+    permissions:
+      pull-requests: write
     uses: ./.github/workflows/deploy.yaml
     with:
       aws-env: "my-app-prod"
