@@ -39,7 +39,7 @@ jobs:
         id: check-env
       - name: Destroy Environment
         if: steps.check-env.outputs.should_terminate
-        run: eb terminate ${{ needs.check-env.outputs.env-name }} --force
+        run: eb terminate ${{ steps.get-env-name.outputs.aws_env }} --force
       - name: Get Pull Request Head Ref
         if: github.event_name == 'issue_comment' && steps.check-env.outputs.should_terminate
         id: get-head-ref
