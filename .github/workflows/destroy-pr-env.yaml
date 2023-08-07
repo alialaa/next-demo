@@ -6,28 +6,28 @@ on:
     types: [closed]
 
 jobs:
-  check-env:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/destroy') || github.event_name == 'pull_request_target' }}
-    outputs:
-      env-name: ${{ steps.get-env-name.outputs.aws_env }}
-    steps:
-      - run: echo '${{ toJson(github.event) }}'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip
-      - name: Install EB CLI
-        id: install-eb-cli
-        run: pip install awsebcli
-      - run: eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2
-      - name: Check that PR is deployed
-        id: get-env-name
-        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names my-app-pr-${{ github.event.issue.number || github.event.pull_request.number }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
-      - run: echo ${{ steps.get-env-name.outputs.aws_env }}
+  # check-env:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ (github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/destroy') || github.event_name == 'pull_request_target' }}
+  #   outputs:
+  #     env-name: ${{ steps.get-env-name.outputs.aws_env }}
+  #   steps:
+  #     - run: echo '${{ toJson(github.event) }}'
+  #     - uses: actions/cache@v3
+  #       with:
+  #         path: ~/.cache/pip
+  #         key: ${{ runner.os }}-pip
+  #     - name: Install EB CLI
+  #       id: install-eb-cli
+  #       run: pip install awsebcli
+  #     - run: eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2
+  #     - name: Check that PR is deployed
+  #       id: get-env-name
+  #       run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names my-app-pr-${{ github.event.issue.number || github.event.pull_request.number }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
+  #     - run: echo ${{ steps.get-env-name.outputs.aws_env }}
   destroy-pr-env:
-    needs: check-env
-    if: needs.check-env.outputs.env-name != ''
+    # needs: check-env
+    if: ${{ (github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/destroy') || github.event_name == 'pull_request_target' }}
     runs-on: ubuntu-latest
     permissions:
       deployments: write
@@ -45,12 +45,16 @@ jobs:
       - name: Install EB CLI
         id: install-eb-cli
         run: pip install awsebcli
+      - run: eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2
+      - name: Check that PR is deployed
+        id: get-env-name
+        run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names my-app-pr-${{ github.event.issue.number || github.event.pull_request.number }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
+      - run: echo ${{ steps.get-env-name.outputs.aws_env }}
       - name: Destroy Environment
-        run: |
-          eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2 
-          eb terminate ${{ needs.check-env.outputs.env-name }}
+        if: steps.get-env-name.outputs.aws_env != ''
+        run: eb terminate ${{ needs.check-env.outputs.env-name }}
       - name: Get Pull Request Head Ref
-        if: github.event_name == 'issue_comment'
+        if: github.event_name == 'issue_comment' && steps.get-env-name.outputs.aws_env != ''
         id: get-head-ref
         uses: actions/github-script@v6
         with:
@@ -62,8 +66,9 @@ jobs:
                 pull_number: context.issue.number
             });
             return response.data.head.ref
-      - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
+      # - run: echo ${{ github.event.pull_request.head.ref || steps.get-head-ref.outputs.result }}
       - name: Get deployment ID
+        if: steps.get-env-name.outputs.aws_env != ''
         uses: actions/github-script@v6
         id: get-latest-deployment
         with:
@@ -76,9 +81,9 @@ jobs:
               per_page: 1
             });
             return response.data.length > 0 ? response.data[0].id : ""
-      - run: echo ${{ steps.get-latest-deployment.outputs.result }}
+      # - run: echo ${{ steps.get-latest-deployment.outputs.result }}
       - name: Add Inactive Status
-        if: steps.get-latest-deployment.outputs.result != ''
+        if: steps.get-latest-deployment.outputs.result != '' && steps.get-env-name.outputs.aws_env != ''
         uses: actions/github-script@v6
         with:
           script: |
