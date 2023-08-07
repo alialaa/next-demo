@@ -35,7 +35,7 @@ jobs:
         id: get-env-status
         run: echo "aws_env_status=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names my-app-pr-${{ github.event.issue.number || github.event.pull_request.number }} --query "Environments[0].Status" --output text)" >> $GITHUB_OUTPUT
       - run: echo ${{ steps.get-env-name.outputs.aws_env }} ${{ steps.get-env-status.outputs.aws_env_status }}
-      - run: echo "should_terminate=${{  steps.get-env-name.outputs.aws_env != '' && steps.get-env-status.outputs.aws_env_status != 'Terminated' }}" >> $GITHUB_OUTPUT
+      - run: echo "should_terminate=${{  steps.get-env-name.outputs.aws_env != 'None' && steps.get-env-status.outputs.aws_env_status != 'Terminated' }}" >> $GITHUB_OUTPUT
         id: check-env
       - name: Destroy Environment
         if: steps.check-env.outputs.should_terminate == 'true'
