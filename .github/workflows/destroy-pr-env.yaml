@@ -13,6 +13,14 @@ jobs:
       env-name: ${{ steps.get-env-name.outputs.aws_env }}
     steps:
       - run: echo '${{ toJson(github.event) }}'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Install EB CLI
+        id: install-eb-cli
+        run: pip install awsebcli
+      - run: eb init nextjs-starter --platform "Node.js 18 running on 64bit Amazon Linux 2" --region eu-west-2
       - name: Check that PR is deployed
         id: get-env-name
         run: echo "aws_env=$(aws elasticbeanstalk describe-environments --application-name nextjs-starter --environment-names my-app-pr-${{ github.event.issue.number || github.event.pull_request.number }} --query "Environments[*].EnvironmentName" --output text)" >> $GITHUB_OUTPUT
