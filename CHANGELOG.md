@@ -1,5 +1,11 @@
 # next-1
 
+## 1.9.1
+
+### Patch Changes
+
+- 4e62f53: lol
+
 ## 1.9.0
 
 ### Minor Changes
