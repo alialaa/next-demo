@@ -13,6 +13,7 @@ jobs:
     permissions:
       deployments: write
       pull-requests: write
+      id-token: write
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
