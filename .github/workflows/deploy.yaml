@@ -47,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      id-token: write
     outputs:
       aws_env_url: ${{ steps.get-cname.outputs.aws_env_url}}
     environment:
