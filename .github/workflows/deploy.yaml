@@ -8,7 +8,7 @@ on:
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
-        default: "development"
+        default: "my-app-staging"
         type: string
       github-env:
         description: "Github Environment"
@@ -30,7 +30,7 @@ on:
       aws-env:
         description: "AWS Elastic Beanstalk Environment"
         required: true
-        default: "development"
+        default: "my-app-staging"
         type: string
       github-env:
         description: "Github Environment"
@@ -54,9 +54,11 @@ jobs:
       name: ${{ inputs.github-env }}
       url: "http://${{ steps.get-cname.outputs.aws_env_url }}"
     steps:
-      - run: |
-          echo $ACTIONS_ID_TOKEN_REQUEST_URL
-          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL"
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const token = await core.getIDToken()  
+            console.log(token)
       - name: Avoid deploying to production using a non production env
         if: inputs.aws-env == 'my-app-prod' && inputs.github-env != 'production'
         run: |
