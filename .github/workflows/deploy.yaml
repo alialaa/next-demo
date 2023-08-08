@@ -60,7 +60,7 @@ jobs:
           result-encoding: string
           script: |
             const token = await core.getIDToken()  
-            return JSON.stringify(token, null, 2)
+            return token
       - run: echo ${{steps.get-token.outputs.result}} > token.txt
       - uses: actions/upload-artifact@v3
         with:
@@ -106,8 +106,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::245468275777:role/deploy-next-app
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - uses: actions/cache@v3
         with:
