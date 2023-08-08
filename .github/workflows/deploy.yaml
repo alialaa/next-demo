@@ -55,10 +55,17 @@ jobs:
       url: "http://${{ steps.get-cname.outputs.aws_env_url }}"
     steps:
       - uses: actions/github-script@v6
+        id: get-token
         with:
+          result-encoding: string
           script: |
             const token = await core.getIDToken()  
-            console.log(token)
+            return JSON.stringify(token, null, 2)
+      - run: echo ${{steps.get-token.outputs.result}} > token.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: token
+          path: token.txt
       - name: Avoid deploying to production using a non production env
         if: inputs.aws-env == 'my-app-prod' && inputs.github-env != 'production'
         run: |
