@@ -54,18 +54,6 @@ jobs:
       name: ${{ inputs.github-env }}
       url: "http://${{ steps.get-cname.outputs.aws_env_url }}"
     steps:
-      - uses: actions/github-script@v6
-        id: get-token
-        with:
-          result-encoding: string
-          script: |
-            const token = await core.getIDToken()  
-            return token
-      - run: echo ${{steps.get-token.outputs.result}} > token.txt
-      - uses: actions/upload-artifact@v3
-        with:
-          name: token
-          path: token.txt
       - name: Avoid deploying to production using a non production env
         if: inputs.aws-env == 'my-app-prod' && inputs.github-env != 'production'
         run: |
@@ -110,6 +98,23 @@ jobs:
           # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
+
+      - uses: actions/github-script@v6
+        if: always()
+        id: get-token
+        with:
+          result-encoding: string
+          script: |
+            const token = await core.getIDToken()  
+            return token
+      - run: echo ${{steps.get-token.outputs.result}} > token.txt
+        if: always()
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: token
+          path: token.txt
+
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
